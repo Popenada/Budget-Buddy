@@ -1,7 +1,7 @@
 "use client";
 
-import { BudgetForm } from "./components/BudgetForm/page";
-import { SpendingAdvisor } from "./components/SpendingAdvisor/page";
+import { BudgetForm } from "./components/BudgetForm";
+import { SpendingAdvisor } from "./components/SpendingAdvisor";
 
 export default function Home() {
   return (
