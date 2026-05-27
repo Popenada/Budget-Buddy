@@ -1,6 +1,6 @@
 "use client";
 
-import { useBudgetStore } from "@/app/store/useBudgeStore";
+import { useBudgetStore } from "@/app/store/useBudgetStore";
 
 type BudgetKey = "monthlyIncome" | "rent" | "gas" | "utilities" | "transportation" | "otherRecurring";
 
