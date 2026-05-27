@@ -1,6 +1,6 @@
 "use client";
 
-import { BudgetForm } from "./components/BudgetForm/page.tsx";
+import { BudgetForm } from "./components/BudgetForm/page";
 import { SpendingAdvisor } from "./components/SpendingAdvisor/page";
 
 export default function Home() {

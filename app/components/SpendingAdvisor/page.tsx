@@ -20,12 +20,15 @@ export function SpendingAdvisor() {
     setError(null);
 
     try {
+      // Fetches api using REST API call
+      // Sends a JSON file of rent, gas, utiliies and otherRecurring 
       const res = await fetch("/api/chat", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({
           inquiry: inquiry.trim(),
           budget: {
+            monthlyIncome: store.monthlyIncome,
             rent: store.rent,
             gas: store.gas,
             utilities: store.utilities,

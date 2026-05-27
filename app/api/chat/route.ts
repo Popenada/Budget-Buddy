@@ -35,6 +35,13 @@ export async function POST(request: NextRequest) {
 
   // Wait for inquiry from user and budget from frontend component input
   const { inquiry, budget } = await request.json();
+  // Check if inquiry and budget is there
+  if (!inquiry || !budget) {
+    return Response.json(
+        { error: "Missing required fields" },
+        { status: 400 }
+    );
+  }
   
   const safeBudget = parseBudget(budget ?? {});
 
