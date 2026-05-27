@@ -77,7 +77,8 @@ Remaining after fixed costs: $${leftover}`;
   try {
     const response = await client.messages.create({
       model: "claude-sonnet-4-6",
-      max_tokens: 1024,
+      // 400 tokens for short output
+      max_tokens: 400,
       // Structured output reinforcement of tooling
       // Tooling + schema for both pros and cons
       tools: [

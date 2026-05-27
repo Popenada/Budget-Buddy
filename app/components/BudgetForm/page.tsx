@@ -1,5 +1,6 @@
 "use client";
 
+import { useEffect, useState } from "react";
 import { useBudgetStore } from "@/app/store/useBudgetStore";
 
 type BudgetKey =
@@ -42,8 +43,13 @@ const SETTERS: Record<BudgetKey, keyof ReturnType<typeof useBudgetStore.getState
 
 export function BudgetForm() {
   const store = useBudgetStore();
-  const totalFixed = store.totalMonthlyFixed();
-  const leftover = store.monthlyIncome - totalFixed;
+  const [mounted, setMounted] = useState(false);
+
+  // Prevent hydration mismatch with persisted Zustand state
+  useEffect(() => setMounted(true), []);
+
+  const totalFixed = mounted ? store.totalMonthlyFixed() : 0;
+  const leftover = mounted ? store.monthlyIncome - totalFixed : 0;
 
   function handleChange(key: BudgetKey, value: string) {
     (store[SETTERS[key]] as (v: number) => void)(Number(value) || 0);
