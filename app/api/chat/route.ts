@@ -11,21 +11,23 @@ export interface BudgetAnalysis {
 }
 
 export interface BudgetData {
+  monthlyIncome: number;
   rent: number;
   gas: number;
   utilities: number;
-  groceries: number;
-  other: number;
+  transportation: number;
+  otherRecurring: number;
 }
 
 // Parsing budget data safely as a number regardless if user doesn't input a number
 function parseBudget(raw: Record<string, unknown>): BudgetData {
   return {
+    monthlyIncome: Number(raw.monthlyIncome) || 0,
     rent: Number(raw.rent) || 0,
     gas: Number(raw.gas) || 0,
     utilities: Number(raw.utilities) || 0,
-    groceries: Number(raw.groceries) || 0,
-    other: Number(raw.other) || 0,
+    transportation: Number(raw.transportation) || 0,
+    otherRecurring: Number(raw.otherRecurring) || 0,
   };
 }
 
@@ -33,19 +35,25 @@ export async function POST(request: NextRequest) {
 
   // Wait for inquiry from user and budget from frontend component input
   const { inquiry, budget } = await request.json();
-
+  
   const safeBudget = parseBudget(budget ?? {});
 
-  const totalMonthly = Object.values(safeBudget).reduce((a, b) => a + b, 0);
+  const { monthlyIncome, rent, gas, utilities, transportation, otherRecurring } = safeBudget;
+  const totalMonthly = rent + gas + utilities + transportation + otherRecurring;
+  const leftover = monthlyIncome - totalMonthly;
 
   // Building the prompt
-  const budgetContext = `Monthly Fixed Costs:
-- Rent/Mortgage: $${safeBudget.rent}
-- Gas/Transportation: $${safeBudget.gas}
-- Utilities: $${safeBudget.utilities}
-- Groceries: $${safeBudget.groceries}
-- Other recurring costs: $${safeBudget.other}
-- Total monthly fixed costs: $${totalMonthly}`;
+  const budgetContext = `Monthly Income: $${monthlyIncome}
+
+Monthly Fixed Costs:
+- Rent/Mortgage: $${rent}
+- Gas: $${gas}
+- Utilities: $${utilities}
+- Transportation: $${transportation}
+- Other recurring costs: $${otherRecurring}
+- Total fixed costs: $${totalMonthly}
+
+Remaining after fixed costs: $${leftover}`;
 
   try {
     const response = await client.messages.create({
