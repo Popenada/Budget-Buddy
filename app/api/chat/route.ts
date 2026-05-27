@@ -16,6 +16,10 @@ export interface BudgetData {
   gas: number;
   utilities: number;
   transportation: number;
+  groceries: number;
+  phone: number;
+  insurance: number;
+  debtPayments: number;
   otherRecurring: number;
 }
 
@@ -27,6 +31,10 @@ function parseBudget(raw: Record<string, unknown>): BudgetData {
     gas: Number(raw.gas) || 0,
     utilities: Number(raw.utilities) || 0,
     transportation: Number(raw.transportation) || 0,
+    groceries: Number(raw.groceries) || 0,
+    phone: Number(raw.phone) || 0,
+    insurance: Number(raw.insurance) || 0,
+    debtPayments: Number(raw.debtPayments) || 0,
     otherRecurring: Number(raw.otherRecurring) || 0,
   };
 }
@@ -45,8 +53,8 @@ export async function POST(request: NextRequest) {
   
   const safeBudget = parseBudget(budget ?? {});
 
-  const { monthlyIncome, rent, gas, utilities, transportation, otherRecurring } = safeBudget;
-  const totalMonthly = rent + gas + utilities + transportation + otherRecurring;
+  const { monthlyIncome, rent, gas, utilities, transportation, groceries, phone, insurance, debtPayments, otherRecurring } = safeBudget;
+  const totalMonthly = rent + gas + utilities + transportation + groceries + phone + insurance + debtPayments + otherRecurring;
   const leftover = monthlyIncome - totalMonthly;
 
   // Building the prompt
@@ -57,6 +65,10 @@ Monthly Fixed Costs:
 - Gas: $${gas}
 - Utilities: $${utilities}
 - Transportation: $${transportation}
+- Groceries / Food: $${groceries}
+- Phone Bill: $${phone}
+- Insurance: $${insurance}
+- Debt Payments: $${debtPayments}
 - Other recurring costs: $${otherRecurring}
 - Total fixed costs: $${totalMonthly}
 

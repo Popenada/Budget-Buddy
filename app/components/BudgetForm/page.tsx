@@ -2,7 +2,17 @@
 
 import { useBudgetStore } from "@/app/store/useBudgetStore";
 
-type BudgetKey = "monthlyIncome" | "rent" | "gas" | "utilities" | "transportation" | "otherRecurring";
+type BudgetKey =
+  | "monthlyIncome"
+  | "rent"
+  | "gas"
+  | "utilities"
+  | "transportation"
+  | "groceries"
+  | "phone"
+  | "insurance"
+  | "debtPayments"
+  | "otherRecurring";
 
 const FIELDS: { key: BudgetKey; label: string; placeholder: string }[] = [
   { key: "monthlyIncome", label: "Monthly Income", placeholder: "5000" },
@@ -10,15 +20,23 @@ const FIELDS: { key: BudgetKey; label: string; placeholder: string }[] = [
   { key: "gas", label: "Gas", placeholder: "80" },
   { key: "utilities", label: "Utilities", placeholder: "120" },
   { key: "transportation", label: "Transportation", placeholder: "150" },
-  { key: "otherRecurring", label: "Other Recurring Costs", placeholder: "200" },
+  { key: "groceries", label: "Groceries / Food", placeholder: "400" },
+  { key: "phone", label: "Phone Bill", placeholder: "80" },
+  { key: "insurance", label: "Insurance", placeholder: "200" },
+  { key: "debtPayments", label: "Debt Payments", placeholder: "300" },
+  { key: "otherRecurring", label: "Other Recurring", placeholder: "100" },
 ];
 
-const SETTERS: Record<BudgetKey, "setMonthlyIncome" | "setRent" | "setGas" | "setUtilities" | "setTransportation" | "setOtherRecurring"> = {
+const SETTERS: Record<BudgetKey, keyof ReturnType<typeof useBudgetStore.getState>> = {
   monthlyIncome: "setMonthlyIncome",
   rent: "setRent",
   gas: "setGas",
   utilities: "setUtilities",
   transportation: "setTransportation",
+  groceries: "setGroceries",
+  phone: "setPhone",
+  insurance: "setInsurance",
+  debtPayments: "setDebtPayments",
   otherRecurring: "setOtherRecurring",
 };
 
@@ -28,7 +46,7 @@ export function BudgetForm() {
   const leftover = store.monthlyIncome - totalFixed;
 
   function handleChange(key: BudgetKey, value: string) {
-    store[SETTERS[key]](Number(value) || 0);
+    (store[SETTERS[key]] as (v: number) => void)(Number(value) || 0);
   }
 
   return (
