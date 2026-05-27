@@ -18,22 +18,33 @@ export interface BudgetData {
   other: number;
 }
 
+// Parsing budget data safely as a number regardless if user doesn't input a number
+function parseBudget(raw: Record<string, unknown>): BudgetData {
+  return {
+    rent: Number(raw.rent) || 0,
+    gas: Number(raw.gas) || 0,
+    utilities: Number(raw.utilities) || 0,
+    groceries: Number(raw.groceries) || 0,
+    other: Number(raw.other) || 0,
+  };
+}
+
 export async function POST(request: NextRequest) {
 
-  // Wait for inquiry from user and budget from frotend compoent input
+  // Wait for inquiry from user and budget from frontend component input
   const { inquiry, budget } = await request.json();
 
-  const totalMonthly = Object.values(budget as BudgetData).reduce(
-    (a, b) => a + (b as number),
-    0
-  );
-  // Building the prompt 
+  const safeBudget = parseBudget(budget ?? {});
+
+  const totalMonthly = Object.values(safeBudget).reduce((a, b) => a + b, 0);
+
+  // Building the prompt
   const budgetContext = `Monthly Fixed Costs:
-- Rent/Mortgage: $${budget.rent}
-- Gas/Transportation: $${budget.gas}
-- Utilities: $${budget.utilities}
-- Groceries: $${budget.groceries}
-- Other recurring costs: $${budget.other}
+- Rent/Mortgage: $${safeBudget.rent}
+- Gas/Transportation: $${safeBudget.gas}
+- Utilities: $${safeBudget.utilities}
+- Groceries: $${safeBudget.groceries}
+- Other recurring costs: $${safeBudget.other}
 - Total monthly fixed costs: $${totalMonthly}`;
 
   try {
