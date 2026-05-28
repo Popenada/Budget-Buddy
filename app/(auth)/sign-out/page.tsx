@@ -10,7 +10,7 @@ export default function SignOutPage() {
 
   useEffect(() => {
     signOut(() => router.push("/sign-in"));
-  }, []);
+  }, [router, signOut]);
 
   return (
     <div className="flex min-h-screen items-center justify-center">
